@@ -1,0 +1,8 @@
+./create-swarm-mode-cluster.sh create nodes
+./create-swarm-mode-cluster.sh remove nodes
+./create-swarm-mode-cluster.sh create swarm
+./create-swarm-mode-cluster.sh remove swarm
+
+docker-machine ip node-1
+docker-machine ip node-2
+docker-machine ip node-3

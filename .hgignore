@@ -1,0 +1,14 @@
+syntax: glob
+Build\*
+Database\Backup\GivingGallery_backup_2011_05_06_010002_0469784.bak
+**\*.bak
+**\_ReSharper.*\**
+**\*.suo
+**\*dtproj.user
+**\*ReSharper*
+**\obj\**
+**\*.log
+**\*.ini
+**\~*.*
+syntax:regexp
+
