@@ -15,6 +15,18 @@ services:
    - "8888:80"
   networks:
    - webnet
+ proxy:
+   image: haproxy
+   command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+   ports: 
+    - "80:80"
+   volumes: 
+    - "/home/docker/haproxy:/usr/local/etc/haproxy"
+   deploy:
+    placement:
+      constraints: [node.role == manager]
+   networks:
+    - webnet
  visualizer:
   image: dockersamples/visualizer:stable
   ports:
