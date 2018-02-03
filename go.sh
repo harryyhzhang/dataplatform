@@ -7,9 +7,11 @@ docker-machine ip node-1
 docker-machine ip node-2
 docker-machine ip node-3
 
+./bin/getconfig.sh
+
 docker-machine ssh node-1 "mkdir ./haproxy"
 docker-machine scp src/*.yml node-1:.
-docker-machine scp haproxy/*.* node-1:./haproxy/
+docker-machine scp haproxy/result_haproxy.cfg node-1:./haproxy/haproxy.cfg
 
 docker-machine ssh node-1 "docker stack deploy -c docker-compose.yml getstartedlab"
 

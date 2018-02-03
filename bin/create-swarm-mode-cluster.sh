@@ -17,9 +17,11 @@ function create_nodes() {
     do
         # Create a docker host by docker-machine
         set -xe
-        docker-machine create -d ${DOCKER_MACHINE_DRIVER} ${MACHINE_OPTS} --engine-env HTTP_PROXY=http://10.100.33.50:8080 --engine-env HTTPS_PROXY=https://10.100.33.50:8080 node-${i}
+        docker-machine create -d ${DOCKER_MACHINE_DRIVER} ${MACHINE_OPTS}  node-${i}
+		#--engine-env HTTP_PROXY=http://10.100.33.50:8080 --engine-env HTTPS_PROXY=https://10.100.33.50:8080
         set +xe
     done
+	printip
 }
 
 function remove_nodes() {
@@ -28,6 +30,7 @@ function remove_nodes() {
         # Remove the docker host
         docker-machine rm -y node-${i}
     done
+	
 }
 
 function create_swarm() {
@@ -97,6 +100,16 @@ function remove_swarm() {
     done
 }
 
+
+function printip() {
+ rm result_ip.txt
+ for i in $(seq 1 ${Size})
+    do
+        # Create a docker host by docker-machine
+        echo `docker-machine ip node-${i}` >> result_ip.txt
+    done
+}
+
 function create() {
     Command=$1
     shift
@@ -105,6 +118,7 @@ function create() {
         swarm)  create_swarm "$@" ;;
         *)      echo "Usage: $0 create <nodes|swarm>" ;;
     esac
+	
 }
 
 function remove() {
