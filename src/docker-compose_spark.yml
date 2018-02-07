@@ -16,12 +16,31 @@ services:
   volumes:
     - ./conf/master:/conf
     - ./data:/tmp/data
- 
-
+  networks:
+    - webnet
+    
+ web:
+  # replace username/repo:tag with your name and image details
+  image: harryyhzhang/quickstart-python
+  deploy:
+   replicas: 5
+   resources:
+    limits:
+     cpus: "0.1"
+     memory: 50M
+   restart_policy:
+    condition: on-failure
+  ports:
+   - "8888:80"
+  networks:
+   - webnet
+   
  worker:
   image: gettyimages/spark
   command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:7077
   hostname: worker
+  deploy:
+   replicas: 3
   environment:
     SPARK_CONF_DIR: /conf
     SPARK_WORKER_CORES: 2
@@ -36,4 +55,19 @@ services:
   volumes:
     - ./conf/worker:/conf
     - ./data2:/tmp/data
-   
+  networks:
+    - webnet
+    
+ visualizer:
+  image: dockersamples/visualizer:stable
+  ports:
+   - "9090:8080"
+  volumes:
+   - "/var/run/docker.sock:/var/run/docker.sock"
+  deploy:
+   placement:
+    constraints: [node.role == manager]
+  networks:
+   - webnet
+networks:
+ webnet:    
