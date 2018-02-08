@@ -14,6 +14,7 @@ docker-machine ssh node-1 "docker stack deploy -c docker-compose_spark.yml getst
 
 cd ${currentfodler}
 
+start chrome `docker-machine ip node-1`':8080'
 
 #docker stack deploy -c docker-compose_spark.yml getstartedlab1
 #docker stack rm getstartedlab1
