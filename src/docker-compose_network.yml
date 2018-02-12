@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+ 
+ master:
+  image: tianon/network-toolbox
+  command: sleep infinity
+  hostname: master
+  networks:
+    - webnet
+    
+ worker:
+  image: tianon/network-toolbox
+  command: sleep infinity
+  hostname: worker
+  deploy:
+   replicas: 1
+  networks:
+    - webnet
+    
+ visualizer:
+  image: dockersamples/visualizer:stable
+  ports:
+   - "8080:8080"
+  volumes:
+   - "/var/run/docker.sock:/var/run/docker.sock"
+  deploy:
+   placement:
+    constraints: [node.role == manager]
+  networks:
+   - webnet         
+networks:
+ webnet:
+    attachable: true
