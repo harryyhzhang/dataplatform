@@ -1,0 +1,1 @@
+docker build -t harryyhzhang/rstudio:2.0 .
