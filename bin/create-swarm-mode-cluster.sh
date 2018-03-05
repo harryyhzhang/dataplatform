@@ -102,11 +102,11 @@ function remove_swarm() {
 
 
 function printip() {
- rm result_ip.txt
+ rm .\\build\\result_ip.txt
  for i in $(seq 1 ${Size})
     do
         # Create a docker host by docker-machine
-        echo `docker-machine ip node-${i}` >> result_ip.txt
+        echo `docker-machine ip node-${i}` >> .\\build\\result_ip.txt
     done
 }
 
