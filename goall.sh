@@ -15,6 +15,14 @@ function buildspark(){
 	start chrome `docker-machine ip node-1`':8080'
 }
 
+function buildanalysis(){
+	docker-machine scp src/docker-compose_analysis.yml node-1:.
+	docker-machine scp -r spark/conf node-1:.
+	docker-machine ssh node-1 "mkdir ~/data"
+	docker-machine ssh node-1 "docker pull gettyimages/spark"
+	docker-machine ssh node-1 "docker stack deploy -c docker-compose_spark.yml getstartedlab"
+	start chrome `docker-machine ip node-1`':8080'
+}
 
 function buildrstudioserver(){
 	docker-machine scp src/docker-docker-compose_rstudioserver.yml node-1:.
@@ -33,7 +41,8 @@ function main() {
 			spark) buildspark "$@" ;;
 			rstudioserver) buildrstudioserver "$@" ;;
 			network) buildnetwork "$@" ;;
-			*)      echo "Usage: $0 all|spark|rstudioserver|network" ;;
+			analysis) buildanalysis "$@" ;;
+			*)      echo "Usage: $0 all|buildanalysis|spark|rstudioserver|network" ;;
 	esac
 }
 
