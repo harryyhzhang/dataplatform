@@ -10,7 +10,6 @@ function buildspark(){
 	docker-machine scp src/docker-compose_spark.yml node-1:.
 	docker-machine scp -r spark/conf node-1:.
 	docker-machine ssh node-1 "mkdir ~/data"
-	docker-machine ssh node-1 "mkdir ~/data2"
 	docker-machine ssh node-1 "docker pull gettyimages/spark"
 	docker-machine ssh node-1 "docker stack deploy -c docker-compose_spark.yml getstartedlab"
 	start chrome `docker-machine ip node-1`':8080'
