@@ -34,6 +34,19 @@ function buildnetwork(){
 	docker-machine scp src/docker-compose_network.yml node-1:.
 }
 
+function buildhadoop(){
+	docker-machine scp src/docker-compose_analysis.yml node-1:.
+	docker-machine scp src/hadoop.env node-1:.
+}
+
+function buildhadoophive(){
+	docker-machine scp src/docker-compose_hive.yml node-1:.
+	docker-machine scp src/hadoop-hive.env node-1:.
+	docker-machine ssh node-1 "docker-compose -f docker-compose_hive.yml up"
+	#docker-machine ssh node-1 "docker exec -it docker_hive-server_1 /opt/hive/bin/beeline -u jdbc:hive2://localhost:10000"
+}
+
+ 
 
 function main() {
 	Command=$1  
@@ -42,7 +55,9 @@ function main() {
 			rstudioserver) buildrstudioserver "$@" ;;
 			network) buildnetwork "$@" ;;
 			analysis) buildanalysis "$@" ;;
-			*)      echo "Usage: $0 all|buildanalysis|spark|rstudioserver|network" ;;
+			hadoop) buildhadoop "$@" ;;
+			hive) buildhadoophive "$@" ;;
+			*)      echo "Usage: $0 all|buildanalysis|spark|rstudioserver|hive|network" ;;
 	esac
 }
 
