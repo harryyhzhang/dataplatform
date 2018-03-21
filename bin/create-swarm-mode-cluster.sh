@@ -17,7 +17,7 @@ function create_nodes() {
     do
         # Create a docker host by docker-machine
         set -xe
-        docker-machine create -d ${DOCKER_MACHINE_DRIVER} ${MACHINE_OPTS}  --engine-env HTTP_PROXY=http://10.100.33.50:8080 --engine-env HTTPS_PROXY=https://10.100.33.50:8080 node-${i}
+        docker-machine create -d ${DOCKER_MACHINE_DRIVER} ${MACHINE_OPTS}    node-${i}
 		#--engine-env HTTP_PROXY=http://10.100.33.50:8080 --engine-env HTTPS_PROXY=https://10.100.33.50:8080
         set +xe
     done

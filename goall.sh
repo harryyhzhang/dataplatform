@@ -16,11 +16,16 @@ function buildspark(){
 }
 
 function buildanalysis(){
+	docker-machine scp src/docker-compose node-1:.
+	docker-machine ssh node-1 "sudo mv ~/docker-compose /usr/local/bin/"
+	docker-machine ssh node-1 "sudo chmod +x /usr/local/bin/docker-compose"
 	docker-machine scp src/docker-compose_analysis.yml node-1:.
 	docker-machine scp -r spark/conf node-1:.
+	docker-machine scp src/hadoop-hive.env node-1:.
 	docker-machine ssh node-1 "mkdir ~/data"
 	docker-machine ssh node-1 "docker pull gettyimages/spark"
-	docker-machine ssh node-1 "docker stack deploy -c docker-compose_spark.yml getstartedlab"
+	#docker-machine ssh node-1 "docker stack deploy -c docker-compose_analysis.yml getstartedlab"
+	docker-machine ssh node-1 "docker-compose -f docker-compose_analysis.yml up"
 	start chrome `docker-machine ip node-1`':8080'
 }
 
@@ -57,7 +62,7 @@ function main() {
 			analysis) buildanalysis "$@" ;;
 			hadoop) buildhadoop "$@" ;;
 			hive) buildhadoophive "$@" ;;
-			*)      echo "Usage: $0 all|buildanalysis|spark|rstudioserver|hive|network" ;;
+			*)      echo "Usage: $0 all|analysis|spark|rstudioserver|hive|network" ;;
 	esac
 }
 
