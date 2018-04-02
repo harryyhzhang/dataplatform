@@ -17,8 +17,7 @@ function create_nodes() {
     do
         # Create a docker host by docker-machine
         set -xe
-        docker-machine create -d ${DOCKER_MACHINE_DRIVER} ${MACHINE_OPTS}    node-${i}
-		#--engine-env HTTP_PROXY=http://10.100.33.50:8080 --engine-env HTTPS_PROXY=https://10.100.33.50:8080
+        docker-machine create -d ${DOCKER_MACHINE_DRIVER} ${MACHINE_OPTS}    --engine-env HTTP_PROXY=http://10.100.33.50:8080 --engine-env HTTPS_PROXY=https://10.100.33.50:8080 node-${i}
         set +xe
     done
 	printip
@@ -35,7 +34,7 @@ function remove_nodes() {
 
 function create_swarm() {
     NumberOfManager=$1
-
+			
     if [ -z "${NumberOfManager}" ]; then
         # if nothing specified, just let everyone are managers.
         NumberOfManager=${Size}

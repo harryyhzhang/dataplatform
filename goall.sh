@@ -2,7 +2,7 @@
 currentfodler=$(pwd -P)
 cd "$(dirname "$0")"
 
-#./bin/create-swarm-mode-cluster.sh create nodes
+./bin/create-swarm-mode-cluster.sh create nodes
 #./bin/create-swarm-mode-cluster.sh create swarm 1
  
 

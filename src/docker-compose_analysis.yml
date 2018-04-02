@@ -1,6 +1,13 @@
 version: "3.3" 
 
 services:
+ rstudio:
+  image: harryyhzhang/rstudio:3.0
+  ports:
+    - 8787:8787
+  networks:
+    - webnet
+    
  master:
   image: harryyhzhang/spark
   command: bin/spark-class org.apache.spark.deploy.master.Master -h 0.0.0.0
@@ -68,7 +75,7 @@ services:
       
  hue:
     image: gethue/hue:latest
-    command: bash -c "sed -i -e 's/## hive_server_host=localhost/hive_server_host=192.168.99.100/g' /hue/desktop/conf/pseudo-distributed.ini && /hue/build/env/bin/hue runserver_plus 0.0.0.0:8888 " 
+    command: bash -c "sed -i -e 's/## hive_server_host=localhost/hive_server_host=192.168.99.101/g' /hue/desktop/conf/pseudo-distributed.ini && /hue/build/env/bin/hue runserver_plus 0.0.0.0:8888 " 
     container_name: hue
     ports:
       - "8888:8888"  
