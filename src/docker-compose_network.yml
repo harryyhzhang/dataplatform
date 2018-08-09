@@ -1,22 +1,24 @@
 version: "3.3"
 services:
- 
+
  master:
   image: tianon/network-toolbox
   command: sleep infinity
-  hostname: master
+  hostname: master_host
   networks:
-    - webnet
-    
+     webnet:
+       ipv4_address: 192.168.33.12
+
  worker:
   image: tianon/network-toolbox
   command: sleep infinity
-  hostname: worker
+  hostname: worker_host
   deploy:
    replicas: 1
   networks:
-    - webnet
-    
+     webnet:
+       ipv4_address: 192.168.33.13
+
  visualizer:
   image: dockersamples/visualizer:stable
   ports:
@@ -27,7 +29,22 @@ services:
    placement:
     constraints: [node.role == manager]
   networks:
-   - webnet         
+    webnet:
+      ipv4_address: 192.168.33.14
+
+ dns:
+  image: defreitas/dns-proxy-server
+  ports:
+   - "5380:5380"
+  volumes:
+   - "/opt/dns-proxy-server/conf:/app/conf"
+   - "/var/run/docker.sock:/var/run/docker.sock"
+   - "/etc/resolv.conf:/etc/resolv.conf"
+  networks:
+    webnet:
+      ipv4_address: 192.168.33.15
+      
 networks:
  webnet:
-    attachable: true
+   external:
+     name: shared_nw

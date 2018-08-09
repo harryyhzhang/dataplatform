@@ -28,6 +28,8 @@ docker-machine ssh host1 "mkdir ./haproxy"
 scp haproxy/result_haproxy.cfg vagrant@192.168.33.10:./haproxy/haproxy.cfg
 scp src/*.yml vagrant@192.168.33.10:.
 scp docker-compose vagrant@192.168.33.10:.
+scp src/hadoop-hive.env vagrant@192.168.33.10:.
+scp src/hadoop.env vagrant@192.168.33.10:.
 docker-machine ssh host1 "sudo usermod -aG docker vagrant"
   
 #docker-machine ssh node-1 "docker stack deploy -c docker-compose.yml getstartedlab"

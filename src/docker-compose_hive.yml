@@ -1,22 +1,36 @@
 version: "3"
 
 services:
+
   hue:
     image: gethue/hue:latest
-    command: /hue/build/env/bin/hue runserver_plus 0.0.0.0:8888 
+    command:  sh -c "sed -i -e 's/## hive_server_host=localhost/hive_server_host=192.168.33.14/g' /hue/desktop/conf/pseudo-distributed.ini && /hue/build/env/bin/hue runserver_plus 0.0.0.0:8888"
     container_name: hue
+    depends_on:
+       - hive-server
     ports:
       - "8888:8888" 
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.11
+
+  
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    ports:
+      - "50070:50070"
+    hostname: namenode  
+    container_name: namenode  
     volumes:
       - namenode:/hadoop/dfs/name
     environment:
       - CLUSTER_NAME=test
     env_file:
       - ./hadoop-hive.env
-    ports:
-      - "50070:50070"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.12
+     
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
     volumes:
@@ -27,6 +41,11 @@ services:
       SERVICE_PRECONDITION: "namenode:50070"
     ports:
       - "50075:50075"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.13
+        
+      
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
     env_file:
@@ -34,8 +53,15 @@ services:
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
       SERVICE_PRECONDITION: "hive-metastore:9083"
+    depends_on:
+      - hive-metastore
+      - hive-metastore-postgresql
     ports:
       - "10000:10000"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.14
+
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     env_file:
@@ -43,13 +69,25 @@ services:
     command: /opt/hive/bin/hive --service metastore
     environment:
       SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
+    depends_on:
+      - hive-metastore-postgresql
+    ports:
+      - "9083:9083"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.15
+
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
-  presto-coordinator:
-    image: shawnzhu/prestodb:0.181
-    ports:
-      - "8080:8080"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.16
 
+networks:
+ webnet:
+   external:
+     name: shared_nw
+     
 volumes:
   namenode:
   datanode:

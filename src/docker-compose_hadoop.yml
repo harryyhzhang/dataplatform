@@ -5,6 +5,7 @@ services:
     image: bde2020/hadoop-namenode:1.1.0-hadoop2.7.1-java8
     ports:
       - "50070:50070"
+    hostname: namenode  
     container_name: namenode
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
@@ -12,11 +13,15 @@ services:
       - CLUSTER_NAME=test
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.12  
   
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:1.1.0-hadoop2.7.1-java8
     ports:
       - "8088:8088"
+    hostname: resourcemanager  
     container_name: resourcemanager
     depends_on:
       - namenode
@@ -24,11 +29,15 @@ services:
       - datanode2
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.13  
   
   historyserver:
     image: bde2020/hadoop-historyserver:1.1.0-hadoop2.7.1-java8
     ports:
       - "8188:8188"
+    hostname: historyserver  
     container_name: historyserver
     depends_on:
       - namenode
@@ -38,21 +47,29 @@ services:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.14  
   
-  nodemanager1:
+  nodemanager:
     image: bde2020/hadoop-nodemanager:1.1.0-hadoop2.7.1-java8
     ports:
       - "8042:8042"
-    container_name: nodemanager1
+    hostname: nodemanager
+    container_name: nodemanager
     depends_on:
       - namenode
       - datanode1
       - datanode2
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.15  
   
   datanode1:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
+    hostname: datanode1
     container_name: datanode1
     depends_on:
       - namenode
@@ -60,9 +77,13 @@ services:
       - hadoop_datanode1:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.16  
   
   datanode2:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
+    hostname: datanode2
     container_name: datanode2
     depends_on:
       - namenode
@@ -70,9 +91,13 @@ services:
       - hadoop_datanode2:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.17  
   
   datanode3:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.7.1-java8
+    hostname: datanode3
     container_name: datanode3
     depends_on:
       - namenode
@@ -80,6 +105,14 @@ services:
       - hadoop_datanode3:/hadoop/dfs/data
     env_file:
       - ./hadoop.env
+    networks:
+     webnet:
+       ipv4_address: 192.168.33.18
+       
+networks:
+ webnet:
+   external:
+     name: shared_nw
 
 volumes:
   hadoop_namenode:
