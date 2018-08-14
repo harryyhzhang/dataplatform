@@ -16,7 +16,7 @@ services:
 
   
   namenode:
-    image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    image: harryyhzhang/docker-hadoop-namenode:hadoop2.7.7-java8
     ports:
       - "50070:50070"
     hostname: namenode  
@@ -32,7 +32,7 @@ services:
         ipv4_address: 192.168.33.12
      
   datanode:
-    image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
+    image: harryyhzhang/docker-hadoop-datanode:hadoop2.7.7-java8
     volumes:
       - datanode:/hadoop/dfs/data
     env_file:
@@ -47,13 +47,15 @@ services:
         
       
   hive-server:
-    image: bde2020/hive:2.3.2-postgresql-metastore
+    image: harryyhzhang/docker-hadoop-hive:r1.2_hive2.3.2-hadoop2.7.7-java8
     env_file:
       - ./hadoop-hive.env
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
       SERVICE_PRECONDITION: "hive-metastore:9083"
     depends_on:
+      - namenode
+      - datanode
       - hive-metastore
       - hive-metastore-postgresql
     ports:
@@ -63,13 +65,15 @@ services:
         ipv4_address: 192.168.33.14
 
   hive-metastore:
-    image: bde2020/hive:2.3.2-postgresql-metastore
+    image: harryyhzhang/docker-hadoop-hive:hive2.3.2-hadoop2.7.7-java8
     env_file:
       - ./hadoop-hive.env
     command: /opt/hive/bin/hive --service metastore
     environment:
       SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
     depends_on:
+      - namenode
+      - datanode
       - hive-metastore-postgresql
     ports:
       - "9083:9083"

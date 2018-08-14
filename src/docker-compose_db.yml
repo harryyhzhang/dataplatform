@@ -1,11 +1,27 @@
 version: "3"
 
 services:
+
+  hive-metastore:
+    image: harryyhzhang/docker-hadoop-hive:hive2.3.2-hadoop2.7.7-java8
+    env_file:
+      - ./hadoop-hive.env
+    command: /opt/hive/bin/hive --service metastore
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
+    depends_on:
+      - hive-metastore-postgresql
+    ports:
+      - "9083:9083"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.15
+
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
     networks:
       webnet:
-        ipv4_address: 192.168.33.15
+        ipv4_address: 192.168.33.16
 
 networks:
  webnet:
