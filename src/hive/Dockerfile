@@ -1,6 +1,6 @@
 FROM harryyhzhang/docker-hadoop-base:hadoop2.7.7-java8
 
-MAINTAINER Harryyhzhang@gmail.com docker build -t harryyhzhang/docker-hadoop-hive . && docker push harryyhzhang/docker-hadoop-hive:hive2.3.2-hadoop2.7.7-java8
+MAINTAINER Harryyhzhang@gmail.com docker build -t harryyhzhang/docker-hadoop-hive:hive2.3.2-hadoop2.7.7-java8 . && docker push harryyhzhang/docker-hadoop-hive:hive2.3.2-hadoop2.7.7-java8
  
 
 ENV HIVE_VERSION 2.3.2

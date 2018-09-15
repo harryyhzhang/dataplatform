@@ -1,0 +1,67 @@
+version: "3"
+
+services:
+ 
+  namenode:
+    image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
+    ports:
+      - "50070:50070"
+    hostname: namenode  
+    container_name: namenode  
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop-hive.env
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.2
+     
+  datanode1:
+    image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    ports:
+      - "50075:50075"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.3
+ 
+  datanode2:
+    image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    ports:
+      - "50075:50075"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.4  
+        
+  datanode3:
+    image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
+    volumes:
+      - hadoop_datanode3:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    ports:
+      - "50075:50075"
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.5        
+
+networks:
+ webnet:
+   external:
+     name: shared_nw
+     
+volumes:
+  hadoop_namenode:
+  hadoop_datanode1:
+  hadoop_datanode2:
+  hadoop_datanode3:
+  hadoop_historyserver:

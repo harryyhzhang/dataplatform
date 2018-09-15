@@ -15,18 +15,16 @@ MAINTAINER harryyhzhang@gmail.com  docker build -t harryyhzhang/docker-hadoop-hi
 
  RUN echo 'deb http://mirrors.kernel.org/ubuntu/ xenial main' >> /etc/apt/sources.list
  RUN apt-get update
- RUN apt-get install -y vim libpng12-0
- 
- RUN apt-get install -y libxml2-dev libcurl4-openssl-dev libssl-dev
- RUN apt-get install -y     gfortran
- 
+
+ RUN apt-get install -y vim libpng12-0 libxml2-dev libcurl4-openssl-dev libssl-dev gfortran wget libapparmor1 gdebi-core curl
  ENV DEBIAN_FRONTEND=noninteractive
- RUN apt-get install -y  wget libapparmor1 gdebi-core curl
+ 
  # get R 3.4.4
+  RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu xenial/' >> /etc/apt/sources.list
  RUN apt-get update && apt-get install -y r-base  
  #RUN wget https://cloud.r-project.org/bin/linux/ubuntu/xenial-cran35/r-base-core_3.5.0-1xenial_amd64.deb
  #RUN gdebi --non-interactive r-base-core_3.5.0-1xenial_amd64.deb
- 
+  
  RUN wget https://download2.rstudio.org/rstudio-server-1.1.456-amd64.deb
  RUN gdebi --non-interactive rstudio-server-1.1.456-amd64.deb 
  #RUN wget https://s3.amazonaws.com/rstudio-ide-build/server/debian9/x86_64/rstudio-server-1.2.830-amd64.deb
@@ -50,6 +48,17 @@ RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')"
 # && apt-get clean \
 # && rm -rf /var/lib/apt/lists/*
  
-# sed -i "1 a www-port=8090" /etc/rstudio/rserver.conf
+ sed -i "1 a www-port=8090" /etc/rstudio/rserver.conf
  
 # gdebi libssl-dev_1.0.2g-1ubuntu4.13_amd64.deb
+
+export HADOOP_CONF_DIR=/opt/hadoop-2.7.7/etc/hadoop
+#export SPARK_HOME=/usr/spark-1.6.3
+export LD_LIBRARY_PATH=/opt/hadoop-2.7.7/etc/hadoop/lib/native:$LD_LIBRARY_PATH
+
+cd $SPARK_HOME/jars/
+wget http://repo1.maven.org/maven2/com/sun/jersey/jersey-bundle/1.19.1/jersey-bundle-1.19.1.jar -o $SPARK_HOME/jars/jersey-bundle-1.19.1.jar
+
+RUN apt-get install -y ssh    iputils-ping
+./bin/spark-shell --master yarn --deploy-mode client
+
