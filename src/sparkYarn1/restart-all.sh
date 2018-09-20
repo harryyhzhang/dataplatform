@@ -64,7 +64,7 @@ docker run --name $HADOOP_MASTER -h $HADOOP_MASTER --net=$NETWORK_NAME \
 docker ps
 
 # start multi-node cluster
-docker exec -it $HADOOP_MASTER "/usr/local/hadoop/spark-services.sh"
+#docker exec -it $HADOOP_MASTER "/usr/local/hadoop/spark-services.sh"
 
 # attach to hadoop master container
-docker attach $HADOOP_MASTER
+#docker attach $HADOOP_MASTER
