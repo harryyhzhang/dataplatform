@@ -1,51 +1,39 @@
 version: "3"
 
 services:
- 
+
   namenode:
     image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
     ports:
       - "50070:50070"
-    hostname: testbed-master  
-    container_name: namenode  
+    hostname: testbed-master
+    container_name: testbed-master
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
+    tty: true
+    stdin_open: true
     networks:
       webnet:
         ipv4_address: 192.168.33.2
-     
+
   datanode1:
     image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
-    hostname: testbed-slave-1  
+    hostname: testbed-slave-1
+    container_name: testbed-slave-1
+    tty: true
+    stdin_open: true
     networks:
       webnet:
         ipv4_address: 192.168.33.3
- 
-  datanode2:
-    image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
-    volumes:
-      - hadoop_datanode2:/hadoop/dfs/data     
-    hostname: testbed-slave-2  
-    networks:
-      webnet:
-        ipv4_address: 192.168.33.4  
-        
-  datanode3:
-    image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
-    volumes:
-      - hadoop_datanode3:/hadoop/dfs/data
-    hostname: testbed-slave-3 
-    networks:
-      webnet:
-        ipv4_address: 192.168.33.5        
+
 
 networks:
  webnet:
    external:
      name: shared_nw
-     
+
 volumes:
   hadoop_namenode:
   hadoop_datanode1:
