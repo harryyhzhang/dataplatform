@@ -18,15 +18,30 @@ docker-machine create \
       --generic-ssh-port 22 \
       host1
 
+#docker-machine ssh host1 "sudo ip addr del 192.168.33.10/24 dev eth1"
+vagrant ssh -c "(sudo ip addr del 192.168.33.10/24 dev eth1 || true) && 
+sudo docker network create  --driver bridge    --subnet=192.168.33.0/24    --gateway=192.168.33.10   --opt 'com.docker.network.bridge.name'='docker1'  shared_nw && 
+sudo brctl addif docker1 eth1 &&
+sudo usermod -aG docker vagrant  &&
+echo 'ip addr del 192.168.33.10/24 dev eth1
+brctl addif docker1 eth1
+exit 0
+' |sudo tee  /etc/rc.local
+"
+ 
 
-vagrant ssh -c 'sudo ip addr del 192.168.33.10/24 dev eth1'
-vagrant ssh -c 'sudo docker network create  --driver bridge    --subnet=192.168.33.0/24    --gateway=192.168.33.10   --opt "com.docker.network.bridge.name"="docker1"  shared_nw'
-vagrant ssh -c 'sudo brctl addif docker1 eth1' 
 eval $(docker-machine env host1)
-docker-machine ssh host1 "sudo usermod -aG docker vagrant"
-scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
-vagrant ssh -c 'chmod +x ~/dataplatform/docker-compose'
-docker-machine ssh host1 " ~/dataplatform/docker-compose -f src/docker-compose_rstudioserver2.yml up "
+#echo '' > ~/.ssh/known_hosts
+#scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
+
+vagrant ssh -c 'cd ~ &&
+sudo apt-get install -y git && 
+git clone https://github.com/harryyhzhang/dataplatform.git &&
+source ./dataplatform/ops.sh &&
+chmod +x ~/dataplatform/src/docker-compose &&
+ cd ~/dataplatform/src &&
+ ./docker-compose -f docker-compose_rstudioserver2.yml up '
+ 
  ######################################3
  
 #docker-machine ssh host1 "mkdir ./haproxy"
