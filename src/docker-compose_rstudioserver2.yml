@@ -8,6 +8,7 @@ services:
       - "50070:50070"
     hostname: testbed-master
     container_name: testbed-master
+    entrypoint:  sh -c  "service ssh start && /usr/local/hadoop/spark-services.sh && hadoop fs -mkdir /user/rstudio && hadoop fs -chmod 777 /user/rstudio && /usr/sbin/rstudio-server start && bash " 
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
     tty: true
