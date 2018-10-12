@@ -23,7 +23,7 @@ docker-machine create \
 
 #echo '' > ~/.ssh/known_hosts
 #scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
-vagrant ssh -c 'sudo apt-get install -y git && 
+vagrant ssh -c '(sudo apt-get install -y git || true) && 
 git clone https://github.com/harryyhzhang/dataplatform.git &&
 cd dataplatform &&
 chmod +x ./gofromlinux.sh &&
