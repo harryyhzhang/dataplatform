@@ -23,6 +23,8 @@ docker-machine create \
 
 #echo '' > ~/.ssh/known_hosts
 #scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
+vagrant ssh -c 'sudo usermod -aG docker vagrant '
+
 vagrant ssh -c '(sudo apt-get install -y git || true) && 
 git clone https://github.com/harryyhzhang/dataplatform.git &&
 cd dataplatform &&
@@ -32,8 +34,7 @@ chmod +x ./gofromlinux.sh &&
  
  #docker-machine ssh host1 "sudo ip addr del 192.168.33.10/24 dev eth1"
 vagrant ssh -c "(sudo ip addr del 192.168.33.10/24 dev eth1 || true) && 
-sudo brctl addif docker1 eth1 &&
-sudo usermod -aG docker vagrant  &&
+sudo brctl addif docker1 eth1  &&
 echo 'ip addr del 192.168.33.10/24 dev eth1
 brctl addif docker1 eth1
 exit 0
