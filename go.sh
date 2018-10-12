@@ -20,7 +20,17 @@ docker-machine create \
       --generic-ssh-port 22 \
       host1
 
-#docker-machine ssh host1 "sudo ip addr del 192.168.33.10/24 dev eth1"
+
+#echo '' > ~/.ssh/known_hosts
+#scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
+vagrant ssh -c 'sudo apt-get install -y git && 
+git clone https://github.com/harryyhzhang/dataplatform.git &&
+cd dataplatform &&
+chmod +x ./gofromlinux.sh &&
+./gofromlinux.sh 
+ '
+ 
+ #docker-machine ssh host1 "sudo ip addr del 192.168.33.10/24 dev eth1"
 vagrant ssh -c "(sudo ip addr del 192.168.33.10/24 dev eth1 || true) && 
 sudo brctl addif docker1 eth1 &&
 sudo usermod -aG docker vagrant  &&
@@ -32,14 +42,6 @@ exit 0
  
 
 eval $(docker-machine env host1)
-#echo '' > ~/.ssh/known_hosts
-#scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
-vagrant ssh -c 'sudo apt-get install -y git && 
-git clone https://github.com/harryyhzhang/dataplatform.git &&
-cd dataplatform &&
-chmod +x ./gofromlinux.sh &&
-./gofromlinux.sh 
- '
  
  ######################################3
  
@@ -53,7 +55,7 @@ chmod +x ./gofromlinux.sh &&
 
   
 #docker-machine ssh node-1 "docker stack deploy -c docker-compose.yml getstartedlab"
-docker-machine ssh host1 "docker-compose -f docker-compose_network.yml up"
+#docker-machine ssh host1 "docker-compose -f docker-compose_network.yml up"
 
 #route delete 172.18.0.0
 #route add 172.18.0.0 MASK 255.255.255.0 `docker-machine ip node-1` METRIC 2
