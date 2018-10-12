@@ -7,8 +7,9 @@ cd "$(dirname "$0")"
  
 
 #./bin/getconfig.sh
-vagrant destroy -f
 docker-machine rm host1 -f
+vagrant destroy -f
+
 vagrant.exe up
 
 docker-machine create \
@@ -33,10 +34,12 @@ exit 0
 eval $(docker-machine env host1)
 #echo '' > ~/.ssh/known_hosts
 #scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
-scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform/gofromlinux.sh vagrant@192.168.33.10:~/
-vagrant ssh -c ' cd ~ &&
+vagrant ssh -c 'sudo apt-get install -y git && 
+git clone https://github.com/harryyhzhang/dataplatform.git &&
+cd dataplatform &&
 chmod +x ./gofromlinux.sh &&
-./gofromlinux.sh '
+./gofromlinux.sh 
+ '
  
  ######################################3
  

@@ -1,7 +1,5 @@
-cd ~ &&
-sudo apt-get install -y git && 
-git clone https://github.com/harryyhzhang/dataplatform.git &&
-cd dataplatform &&
+ 
+
 source ./ops.sh &&
 cd src &&
 chmod +x docker-compose &&
