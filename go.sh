@@ -7,7 +7,8 @@ cd "$(dirname "$0")"
  
 
 #./bin/getconfig.sh
-
+vagrant destroy -f
+docker-machine rm host1 -f
 vagrant.exe up
 
 docker-machine create \
@@ -20,7 +21,6 @@ docker-machine create \
 
 #docker-machine ssh host1 "sudo ip addr del 192.168.33.10/24 dev eth1"
 vagrant ssh -c "(sudo ip addr del 192.168.33.10/24 dev eth1 || true) && 
-sudo docker network create  --driver bridge    --subnet=192.168.33.0/24    --gateway=192.168.33.10   --opt 'com.docker.network.bridge.name'='docker1'  shared_nw && 
 sudo brctl addif docker1 eth1 &&
 sudo usermod -aG docker vagrant  &&
 echo 'ip addr del 192.168.33.10/24 dev eth1
@@ -33,14 +33,10 @@ exit 0
 eval $(docker-machine env host1)
 #echo '' > ~/.ssh/known_hosts
 #scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform vagrant@192.168.33.10:~/
-
-vagrant ssh -c 'cd ~ &&
-sudo apt-get install -y git && 
-git clone https://github.com/harryyhzhang/dataplatform.git &&
-source ./dataplatform/ops.sh &&
-chmod +x ~/dataplatform/src/docker-compose &&
- cd ~/dataplatform/src &&
- ./docker-compose -f docker-compose_rstudioserver2.yml up '
+scp -r -i ../dataplatform/.vagrant/machines/host1/virtualbox/private_key ../dataplatform/gofromlinux.sh vagrant@192.168.33.10:~/
+vagrant ssh -c ' cd ~ &&
+chmod +x ./gofromlinux.sh &&
+./gofromlinux.sh '
  
  ######################################3
  
