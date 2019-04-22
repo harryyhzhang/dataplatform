@@ -82,8 +82,11 @@ RUN echo "deb http://mirrors.kernel.org/ubuntu/ $(lsb_release -sc) main" >> /etc
 #RUN sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main"
 RUN apt-get update && apt-get install -y vim libpng12-0 libxml2-dev libcurl4-openssl-dev libssl-dev gfortran wget libapparmor1 gdebi-core curl
 
-# get R 3.4.4
-RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu xenial/' >> /etc/apt/sources.list
+# get R 3.4.5
+#ref:https://cran.rstudio.com/bin/linux/ubuntu/README.html
+RUN apt-get update && apt-get install -y apt-transport-https
+RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -sc)-cran35/" >> /etc/apt/sources.list
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN apt-get update && apt-get install -y r-base
 RUN R -e "install.packages('sparklyr')"
 RUN R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
