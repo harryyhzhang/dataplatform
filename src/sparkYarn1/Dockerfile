@@ -78,8 +78,8 @@ RUN wget  -O ./hive.tar.gz -q https://archive.apache.org/dist/hive/hive-$HIVE_VE
 RUN wget https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar -O $HIVE_HOME/lib/postgresql-jdbc.jar 
 	 
 
-
-RUN echo 'deb http://mirrors.kernel.org/ubuntu/ xenial main' >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.kernel.org/ubuntu/ $(lsb_release -sc) main" >> /etc/apt/sources.list
+#RUN sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu $(lsb_release -sc) main"
 RUN apt-get update && apt-get install -y vim libpng12-0 libxml2-dev libcurl4-openssl-dev libssl-dev gfortran wget libapparmor1 gdebi-core curl
 
 # get R 3.4.4
