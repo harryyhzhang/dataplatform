@@ -74,7 +74,10 @@ ENV PATH=$HIVE_HOME/bin:$PATH
 RUN wget  -O ./hive.tar.gz -q https://archive.apache.org/dist/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz && \
 	tar xfz hive.tar.gz && \
 	mv apache-hive-$HIVE_VERSION-bin $HIVE_HOME 
-	
+RUN $HIVE_HOME/bin/schematool -initSchema -dbType derby
+# $HIVE_HOME/bin/hiveserver2	
+# $HIVE_HOME/bin/hive --service hiveserver2
+
 RUN wget https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar -O $HIVE_HOME/lib/postgresql-jdbc.jar 
 	 
 
