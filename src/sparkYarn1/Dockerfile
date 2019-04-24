@@ -12,12 +12,19 @@ USER root
 RUN addgroup hadoop
 RUN adduser --ingroup hadoop hduser --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
 RUN echo "hduser:hduser" | sudo chpasswd
-RUN usermod -aG sudo hduser  
+RUN usermod -aG sudo hduser
 
 RUN adduser   rstudio --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
 RUN echo "rstudio:rstudio" | chpasswd 
 
-USER hduser
+RUN su hduser
+#setup env variables in bash, but it may not be necessary
+RUN echo $'export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64  \n\
+export HADOOP_HOME=/usr/local/hadoop   \n\
+export SPARK_HOME=/usr/local/spark    \n\
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SPARK_HOME/bin:$SPARK_HOME:sbin  \n\
+' >> ~/.profile
+
 # install utilities on up-to-date node
 RUN sudo apt-get update && apt-get -y dist-upgrade && apt-get install -y openssh-server wget  default-jdk scala netcat procps
 
@@ -83,10 +90,7 @@ ENV PATH=$HIVE_HOME/bin:$PATH
 RUN wget  -O ./hive.tar.gz -q https://archive.apache.org/dist/hive/hive-$HIVE_VERSION/apache-hive-$HIVE_VERSION-bin.tar.gz && \
 	tar xfz hive.tar.gz && \
 	mv apache-hive-$HIVE_VERSION-bin $HIVE_HOME 
-RUN $HIVE_HOME/bin/schematool -initSchema -dbType derby
-# $HIVE_HOME/bin/hiveserver2	
-# $HIVE_HOME/bin/hive --service hiveserver2
-
+	
 RUN wget https://jdbc.postgresql.org/download/postgresql-9.4.1212.jar -O $HIVE_HOME/lib/postgresql-jdbc.jar 
 	 
 
@@ -100,14 +104,15 @@ RUN sudo apt-get update && apt-get install -y apt-transport-https
 RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -sc)-cran35/" >> /etc/apt/sources.list
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN apt-get update && apt-get install -y r-base
-RUN R -e "install.packages('sparklyr')"
-RUN R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
-RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')" 
+#RUN R -e "install.packages('sparklyr')"
+#RUN R -e "install.packages('devtools', repos = 'http://cran.us.r-project.org')"
+#RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')" 
 
 # Install R studio server 1.1.456
 RUN wget https://download2.rstudio.org/rstudio-server-1.1.456-amd64.deb
 RUN gdebi --non-interactive rstudio-server-1.1.456-amd64.deb 
 RUN sed -i "1 a www-port=8090" /etc/rstudio/rserver.conf
+
 
 # run hadoop services
 ENTRYPOINT service ssh start; cd $SPARK_HOME; bash
