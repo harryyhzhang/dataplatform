@@ -12,7 +12,7 @@ USER root
 RUN addgroup hadoop
 RUN adduser --ingroup hadoop hduser --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
 RUN echo "hduser:hduser" | sudo chpasswd
-RUN usermod -aG sudo hduser 
+RUN usermod -aG sudo hduser  
 
 RUN adduser   rstudio --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
 RUN echo "rstudio:rstudio" | chpasswd 
