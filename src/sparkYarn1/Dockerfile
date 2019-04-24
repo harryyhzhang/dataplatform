@@ -9,8 +9,17 @@ MAINTAINER harryyhzhang@gmail.com
 # set root user
 USER root
 
+RUN addgroup hadoop
+RUN adduser --ingroup hadoop hduser --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+RUN echo "hduser:hduser" | sudo chpasswd
+RUN usermod -aG sudo username
+
+RUN adduser   rstudio --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+RUN echo "rstudio:rstudio" | chpasswd 
+
+USER hduser
 # install utilities on up-to-date node
-RUN apt-get update && apt-get -y dist-upgrade && apt-get install -y openssh-server wget  default-jdk scala netcat procps
+RUN sudo apt-get update && apt-get -y dist-upgrade && apt-get install -y openssh-server wget  default-jdk scala netcat procps
 
 # set java home
 ENV JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
@@ -84,7 +93,7 @@ RUN apt-get update && apt-get install -y vim libpng12-0 libxml2-dev libcurl4-ope
 
 # get R 3.4.5
 #ref:https://cran.rstudio.com/bin/linux/ubuntu/README.html
-RUN apt-get update && apt-get install -y apt-transport-https
+RUN sudo apt-get update && apt-get install -y apt-transport-https
 RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -sc)-cran35/" >> /etc/apt/sources.list
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN apt-get update && apt-get install -y r-base
@@ -95,8 +104,6 @@ RUN R -e "install.packages('ggplot2', repos = 'http://cran.us.r-project.org')"
 # Install R studio server 1.1.456
 RUN wget https://download2.rstudio.org/rstudio-server-1.1.456-amd64.deb
 RUN gdebi --non-interactive rstudio-server-1.1.456-amd64.deb 
-RUN adduser   rstudio --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
-RUN echo "rstudio:rstudio" | chpasswd 
 RUN sed -i "1 a www-port=8090" /etc/rstudio/rserver.conf
 
 # run hadoop services
@@ -106,3 +113,4 @@ ENTRYPOINT service ssh start; cd $SPARK_HOME; bash
 #usefull command
 #./bin/spark-shell --master yarn --deploy-mode client
 # some spark version need this update: wget http://repo1.maven.org/maven2/com/sun/jersey/jersey-bundle/1.19.1/jersey-bundle-1.19.1.jar -o $SPARK_HOME/jars/jersey-bundle-1.19.1.jar 
+
