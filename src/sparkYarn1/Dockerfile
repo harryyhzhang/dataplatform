@@ -17,7 +17,7 @@ RUN usermod -aG sudo hduser
 RUN adduser   rstudio --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
 RUN echo "rstudio:rstudio" | chpasswd 
 
-#RUN su hduser
+RUN su hduser
 #setup env variables in bash, but it may not be necessary
 RUN echo $'export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64  \n\
 export HADOOP_HOME=/usr/local/hadoop   \n\
