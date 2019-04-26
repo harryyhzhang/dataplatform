@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+
+  namenode:
+    image: gcr.io/harrydataplatform/github.com/harryyhzhang/dataplatform/src/sparkyarn1:latest
+    ports:
+      - "50070:50070"
+      - "8090:8090"
+    hostname: testbed-master
+    container_name: testbed-master
+    entrypoint:  sh -c  "sudo service ssh start &&  /usr/local/hadoop/spark-services.sh && hadoop fs -mkdir /user/rstudio && hadoop fs -chmod 777 /user/rstudio && sudo /usr/sbin/rstudio-server start && bash" 
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+    tty: true
+    stdin_open: true
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.2
+
+  datanode1:
+    image: gcr.io/harrydataplatform/github.com/harryyhzhang/dataplatform/src/sparkyarn1:latest
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+    hostname: testbed-slave-1
+    container_name: testbed-slave-1
+    tty: true
+    stdin_open: true
+    networks:
+      webnet:
+        ipv4_address: 192.168.33.3
+
+
+networks:
+ webnet:
+   external:
+     name: shared_nw
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode1:
+  hadoop_datanode2:
+  hadoop_datanode3:
+  hadoop_historyserver:
