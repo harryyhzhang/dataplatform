@@ -73,7 +73,7 @@ RUN mkdir -p $HADOOP_HOME/hdfs/namenode \
 # setup configs - [standalone, pseudo-distributed mode, fully distributed mode]
 # NOTE: Directly using COPY/ ADD will NOT work if you are NOT using absolute paths inside the docker image.
 # Temporary files: http://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch03s18.html
-COPY config/ /tmp/
+COPY --chown=hduser:hadoop config/ /tmp/
 RUN sudo mv /tmp/ssh_config $HOME/.ssh/config \
     && sudo mv /tmp/hadoop-env.sh $HADOOP_HOME/etc/hadoop/hadoop-env.sh \
     && sudo mv /tmp/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml \
@@ -87,8 +87,8 @@ RUN sudo mv /tmp/ssh_config $HOME/.ssh/config \
     && sudo mv /tmp/spark/log4j.properties $SPARK_HOME/conf/log4j.properties
 
 # Add startup script
-ADD scripts/spark-services.sh $HADOOP_HOME/spark-services.sh
-
+ADD --chown=hduser:hadoop scripts/spark-services.sh $HADOOP_HOME/spark-services.sh
+RUN chmod +x $HADOOP_HOME/spark-services.sh
 # set permissions
 #RUN chmod 744 -R $HADOOP_HOME
 
@@ -131,8 +131,8 @@ RUN sudo sed -i "1 a www-port=8090" /etc/rstudio/rserver.conf
 
 
 # run hadoop services
-ENTRYPOINT service ssh start; cd $SPARK_HOME; bash
-
+#ENTRYPOINT sudo service ssh start; cd $SPARK_HOME; bash
+ENTRYPOINT ["/bin/bash", "-c"," sudo service ssh start;cd $SPARK_HOME;bash"]
 
 #usefull command
 #./bin/spark-shell --master yarn --deploy-mode client
