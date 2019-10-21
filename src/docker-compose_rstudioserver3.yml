@@ -7,10 +7,10 @@ services:
     ports:
       - "50070:50070"
       - "8090:8090"
-      - "10000:80"
+      - "10000:10000"
     hostname: testbed-master
     container_name: testbed-master
-    entrypoint:  sh -c  "sudo service ssh start && $HIVE_HOME/bin/hiveserver2 --hiveconf hive.server2.enable.doAs=false &  /usr/local/hadoop/spark-services.sh && hadoop fs -mkdir /user/rstudio && hadoop fs -chmod 777 /user/rstudio && sudo /usr/sbin/rstudio-server start && bash" 
+    entrypoint:  sh -c  "sudo service ssh start && cd $HIVE_HOME/bin && ./hiveserver2 --hiveconf hive.server2.enable.doAs=false &  /usr/local/hadoop/spark-services.sh && hadoop fs -mkdir /user/rstudio && hadoop fs -chmod 777 /user/rstudio && sudo /usr/sbin/rstudio-server start && bash" 
     volumes:
       - hadoop_namenode:/hadoop/dfs/name
     tty: true
