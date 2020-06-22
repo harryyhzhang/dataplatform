@@ -7,6 +7,7 @@ services:
     ports:
       - "50070:50070"
       - "8090:8090"
+      - "8088:8088"
     hostname: testbed-master
     container_name: testbed-master
     entrypoint:  sh -c  "service ssh start && /usr/local/hadoop/spark-services.sh && hadoop fs -mkdir /user/rstudio && hadoop fs -chmod 777 /user/rstudio && /usr/sbin/rstudio-server start && bash " 
@@ -17,9 +18,15 @@ services:
     networks:
       webnet:
         ipv4_address: 192.168.33.2
-
+    deploy:
+      resources:
+          limits:
+            memory: 4g
+            
   datanode1:
     image: harryyhzhang/hadoop2.7hive2.3.2spark2.0.2r3.4
+    ports: 
+      - "8042:8042"
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
     hostname: testbed-slave-1
@@ -29,7 +36,10 @@ services:
     networks:
       webnet:
         ipv4_address: 192.168.33.3
-
+    deploy:
+      resources:
+          limits:
+            memory: 4g
 
 networks:
  webnet:
